@@ -8,6 +8,7 @@
 		<AssemblyName>Crossroads</AssemblyName>
 		<Configuration>Debug;Release</Configuration>
 		<VersionPrefix>1.0.0-preview</VersionPrefix>
+<<<<<<< HEAD
 		<PackageId>MorganStanley.Crossroads</PackageId>
 		<Company>MorganStanley</Company>
 		<Product>Crossroads</Product>
@@ -15,6 +16,8 @@
 		<RepositoryUrl>https://github.com/morganstanley/Crossroads</RepositoryUrl>
 		<Authors>MorganStanley</Authors>
 		<TargetFramework>net6.0</TargetFramework>
+=======
+>>>>>>> 1c2a71b (remove net6 TargetFramework from csproj)
 	</PropertyGroup>
 	<ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.0" />
