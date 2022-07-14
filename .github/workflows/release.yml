@@ -18,12 +18,6 @@ jobs:
         with:
           name: package
           path: ./package
-        run: |
-          ls -R
-
-      # - name: Print current working director
-      #   run: |
-      #     ls -R
       - name: Publish to nuget
         run: |
           dir
