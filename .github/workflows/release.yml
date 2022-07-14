@@ -17,9 +17,11 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: package
+        # path: ./packages
+
       - name: Publish to nuget
         run: |
           dir
           echo "=========="
           ls -R 
-          dotnet nuget push ".\package\*.nupkg" --no-symbols true --source "https://api.nuget.org/v3/index.json" --api-key ${{ secrets.NUGET_KEY }}
+          dotnet nuget push ".\pak\*.nupkg" --no-symbols true --source "https://api.nuget.org/v3/index.json" --api-key ${{ secrets.NUGET_KEY }}
