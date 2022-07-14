@@ -26,4 +26,6 @@ jobs:
           ls -R
           echo "=========="
           pwd
-          dotnet nuget push ".\pak\*.nupkg" --no-symbols true --source "https://api.nuget.org/v3/index.json" --api-key 4003d786-cc37-4004-bfdf-c4f3e8ef9b34
+          echo "=========="
+          ls .\package\*.nupkg
+          dotnet nuget push ".\package\*.nupkg" --no-symbols true --source "https://api.nuget.org/v3/index.json" --api-key 4003d786-cc37-4004-bfdf-c4f3e8ef9b34
