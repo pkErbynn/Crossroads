@@ -20,6 +20,6 @@ jobs:
           path: ./package
       - name: Publish to nuget
         run: |
-          dir
+          dir 
           ls -R
           dotnet nuget push ".\package\*.nupkg" --no-symbols true --source "https://api.nuget.org/v3/index.json" --api-key ${{ secrets.NUGET_KEY }}
