@@ -36,7 +36,9 @@ jobs:
           flags: unittests
           fail_ci_if_error: true
       - name: Pack
-        run: dotnet pack --no-build --configuration Release --output package
+        run: |
+          dotnet pack --no-build --configuration Release --output package
+          ls -R
       - name: Package published artifact
         uses: actions/upload-artifact@v2
         with:
