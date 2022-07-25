@@ -32,6 +32,33 @@ namespace Crossroads.Commands
             Handler = CommandHandler.Create<IHost>(LauncherApplicationHandler2);
         }
 
+        private async Task<int> LauncherApplicationHandler(IHost host, string args)
+        {
+            var logger = host.Services.GetRequiredService<ILogger<CrossroadsRootCommand>>();
+            try
+            {
+                var detectService = host.Services.GetRequiredService<IQueryRunningModeService>();
+                switch (detectService.Query())
+                {
+                    case RunningMode.Package:
+                        var helpPage = host.Services.GetRequiredService<IDisplayHelpPage>();
+                        return await helpPage.GetHelpPage(this);
+
+                    case RunningMode.Launch:
+                        var launcherService = host.Services.GetRequiredService<ILaunchApplicationService>();
+                        return await launcherService.RunAsync(args);
+
+                    default:
+                        throw new InvalidOperationException();
+                }
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e.Message);
+            }
+            return 1;
+        }
+
         private async Task<int> LauncherApplicationHandler2(IHost host)
         {
             var logger = host.Services.GetRequiredService<ILogger<CrossroadsRootCommand>>();
@@ -59,32 +86,42 @@ namespace Crossroads.Commands
             return 1;
         }
 
-    private async Task<int> LauncherApplicationHandler(IHost host, string args)
-        {
-            var logger = host.Services.GetRequiredService<ILogger<CrossroadsRootCommand>>();
-            try
-            {
-                var detectService = host.Services.GetRequiredService<IQueryRunningModeService>();
-                switch (detectService.Query())
-                {
-                    case RunningMode.Package:
-                        var helpPage = host.Services.GetRequiredService<IDisplayHelpPage>();
-                        return await helpPage.GetHelpPage(this);
+        //private async Task<int> LauncherApplicationHandler(IHost host)
+        //{
+        //     return    await BaseLauncherApplication(host);
+        //}
 
-                    case RunningMode.Launch:
-                        var launcherService = host.Services.GetRequiredService<ILaunchApplicationService>();
-                        return await launcherService.RunAsync(args);
+        //private async Task<int> LauncherApplicationWithArgHandler(IHost host, string? args)
+        //{
+        //        return await BaseLauncherApplication(host, args);
+        //}
 
-                    default:
-                        throw new InvalidOperationException();
-                }
-            }
-            catch (Exception e)
-            {
-                logger.LogError(e.Message);
-            }
-            return 1;
-        }
+        //private async Task<int> BaseLauncherApplication(IHost host, string args=null)
+        //{
+        //    var logger = host.Services.GetRequiredService<ILogger<CrossroadsRootCommand>>();
+        //    try
+        //    {
+        //        var detectService = host.Services.GetRequiredService<IQueryRunningModeService>();
+        //        switch (detectService.Query())
+        //        {
+        //            case RunningMode.Package:
+        //                var helpPage = host.Services.GetRequiredService<IDisplayHelpPage>();
+        //                return await helpPage.GetHelpPage(this);
+
+        //            case RunningMode.Launch:
+        //                var launcherService = host.Services.GetRequiredService<ILaunchApplicationService>();
+        //                return await launcherService.RunAsync(args);
+
+        //            default:
+        //                throw new InvalidOperationException();
+        //        }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        logger.LogError(e.Message);
+        //    }
+        //    return 1;
+        //}
 
         private readonly Option argsOption = new Option<string>(new string[] { "--args" }, "Override arguments.")
         {
