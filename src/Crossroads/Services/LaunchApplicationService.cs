@@ -12,13 +12,14 @@
  * and limitations under the License.
  */
 
-using Crossroads.Services;
 using Microsoft.Extensions.Configuration;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Abstractions;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace Crossroads.Services
 {
@@ -33,7 +34,8 @@ namespace Crossroads.Services
             this.launcherOption = new PackageOption
             {
                 Command = configuration["Launcher:Command"],
-                Args = configuration["Launcher:Args"]
+                Args = configuration["Launcher:Args"],
+                Include = configuration.GetSection("Launcher:Include")?.Get<IEnumerable<string>>()
             };
             this.fileSystem = fileSystem;
             this.processService = processService;
@@ -50,12 +52,13 @@ namespace Crossroads.Services
             string workingDirectory;
             if (fileSystem.Directory.Exists(assetsDirectory))
             {
-                string tmpCommand = Path.Combine(assetsDirectory, command);
+                string tmpCommand = Path.Combine(launcherAssetsDirectory, command);
                 if (fileSystem.File.Exists(tmpCommand))
                 {
                     command = tmpCommand;
                 }
-                workingDirectory = assetsDirectory;
+
+                workingDirectory = launcherAssetsDirectory;
             }
             else
             {
@@ -69,10 +72,11 @@ namespace Crossroads.Services
                 UseShellExecute = false,
                 WorkingDirectory = workingDirectory
             };
-            return await processService.RunAsync(startInfo);
 
+            return await processService.RunAsync(startInfo);
         }
 
         private string assetsDirectory => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "assets");
+        private string launcherAssetsDirectory => Directory.GetDirectories(assetsDirectory).FirstOrDefault();
     }
 }

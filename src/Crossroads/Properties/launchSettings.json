@@ -1,7 +1,14 @@
 {
   "profiles": {
     "Crossroads": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "commandLineArgs": "package --name work19 --command \"chrome.exe\" --args \"https://www.morganstanley.com/\" --location \"C:\\Users\\User\\Desktop\\Destination\" --icon \"C:\\Users\\User\\Desktop\\myicon.ico\" --version 1.0 --include \"C:\\Program Files\\Google\\Chrome\\Application\""
+    },
+    "Profile 1": {
+      "commandName": "Executable",
+      "jsWebView2Debugging": false,
+      "sqlDebugging": false,
+      "nativeDebugging": false
     }
   }
 }

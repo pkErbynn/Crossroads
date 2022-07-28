@@ -129,7 +129,6 @@ namespace Crossroads.Services
         }
 
         private string workingDirectory;
-        //WorkingDirectory contains path to temp/crossroads/random/'AppDirectory'
         private string appHostDirectory => Path.Combine(WorkingDirectory, "AppDirectory");
         private string launcherSourceDirectory => Path.Combine(AppDomain.CurrentDomain.BaseDirectory);
 

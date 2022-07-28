@@ -29,11 +29,11 @@ namespace Crossroads.Commands
         {
             AddOption(argsOption);
             Handler = CommandHandler.Create<IHost, string>(LauncherApplicationHandler);
-            Handler = CommandHandler.Create<IHost>(LauncherApplicationHandler2);
         }
 
         private async Task<int> LauncherApplicationHandler(IHost host, string args)
         {
+            Console.WriteLine("with args:", args);
             var logger = host.Services.GetRequiredService<ILogger<CrossroadsRootCommand>>();
             try
             {
@@ -41,10 +41,12 @@ namespace Crossroads.Commands
                 switch (detectService.Query())
                 {
                     case RunningMode.Package:
+                        Console.WriteLine("Package mode");
                         var helpPage = host.Services.GetRequiredService<IDisplayHelpPage>();
                         return await helpPage.GetHelpPage(this);
 
                     case RunningMode.Launch:
+                        Console.WriteLine("launch mode");
                         var launcherService = host.Services.GetRequiredService<ILaunchApplicationService>();
                         return await launcherService.RunAsync(args);
 
@@ -58,70 +60,6 @@ namespace Crossroads.Commands
             }
             return 1;
         }
-
-        private async Task<int> LauncherApplicationHandler2(IHost host)
-        {
-            var logger = host.Services.GetRequiredService<ILogger<CrossroadsRootCommand>>();
-            try
-            {
-                var detectService = host.Services.GetRequiredService<IQueryRunningModeService>();
-                switch (detectService.Query())
-                {
-                    case RunningMode.Package:
-                        var helpPage = host.Services.GetRequiredService<IDisplayHelpPage>();
-                        return await helpPage.GetHelpPage(this);
-
-                    case RunningMode.Launch:
-                        var launcherService = host.Services.GetRequiredService<ILaunchApplicationService>();
-                        return await launcherService.RunAsync();
-
-                    default:
-                        throw new InvalidOperationException();
-                }
-            }
-            catch (Exception e)
-            {
-                logger.LogError(e.Message);
-            }
-            return 1;
-        }
-
-        //private async Task<int> LauncherApplicationHandler(IHost host)
-        //{
-        //     return    await BaseLauncherApplication(host);
-        //}
-
-        //private async Task<int> LauncherApplicationWithArgHandler(IHost host, string? args)
-        //{
-        //        return await BaseLauncherApplication(host, args);
-        //}
-
-        //private async Task<int> BaseLauncherApplication(IHost host, string args=null)
-        //{
-        //    var logger = host.Services.GetRequiredService<ILogger<CrossroadsRootCommand>>();
-        //    try
-        //    {
-        //        var detectService = host.Services.GetRequiredService<IQueryRunningModeService>();
-        //        switch (detectService.Query())
-        //        {
-        //            case RunningMode.Package:
-        //                var helpPage = host.Services.GetRequiredService<IDisplayHelpPage>();
-        //                return await helpPage.GetHelpPage(this);
-
-        //            case RunningMode.Launch:
-        //                var launcherService = host.Services.GetRequiredService<ILaunchApplicationService>();
-        //                return await launcherService.RunAsync(args);
-
-        //            default:
-        //                throw new InvalidOperationException();
-        //        }
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        logger.LogError(e.Message);
-        //    }
-        //    return 1;
-        //}
 
         private readonly Option argsOption = new Option<string>(new string[] { "--args" }, "Override arguments.")
         {
