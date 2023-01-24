@@ -39,7 +39,7 @@ namespace Crossroads.Services
             try
             {
                 using var iconInIcoFormat = GetIconStream(iconPath);
-                return compilation.CreateDefaultWin32Resources(NeedVersion(version), true, null, iconInIcoFormat);
+                return compilation.CreateDefaultWin32Resources(NeedVersion(version), false, null, iconInIcoFormat);
             }
             catch(IOException exception)
             {
@@ -67,7 +67,7 @@ namespace Crossroads.Services
 
         private Stream GetIconStream()
         {
-            string iconPath = "/home/erbynn/Documents/resource/wrong/m-icon.png";
+            string iconPath = "/home/erbynn/Documents/resource/m-icon.png";
             Console.WriteLine(iconPath);
             Stream iconStream = null;
             try
@@ -100,12 +100,21 @@ namespace Crossroads.Services
                 // if(option.TargetOs == AppHostService.LINUX_RID){}
 
                 Func<Stream> iconPath2 = GetIconStream;
+                Console.WriteLine("ico path stream");
+                Console.WriteLine(iconPath2);
 
                 var resources = new List<ResourceDescription> { 
                     new ResourceDescription("resourceName", iconPath2, true)
                 };
 
+                resources.ForEach(i => Console.Write("{0}\t", i));
+
+                Console.WriteLine("again:");
+                resources.ForEach(Console.WriteLine);
+
                 using var win32Resources = GetWin32Resources(compilation, version, iconPath);
+                Console.WriteLine("win32Resources");
+                Console.WriteLine(win32Resources);
 
                 
                 var emitResult = await Task.Run(() => compilation.Emit(outputAssembly, win32Resources: win32Resources, manifestResources: resources));
