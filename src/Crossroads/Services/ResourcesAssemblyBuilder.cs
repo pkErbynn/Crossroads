@@ -20,6 +20,8 @@ using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Crossroads.Services
 {
@@ -62,6 +64,23 @@ namespace Crossroads.Services
             return iconStream;
         }
 
+
+        private Stream GetIconStream()
+        {
+            string iconPath = "/home/erbynn/Documents/resource/wrong/m-icon.png";
+            Console.WriteLine(iconPath);
+            Stream iconStream = null;
+            try
+            {
+                iconStream = fileSystem.File.OpenRead(iconPath);
+            }
+            catch (FileNotFoundException exception)
+            {
+                throw new FileNotFoundException("Invalid icon path.", exception);
+            }
+            return iconStream;
+        }
+
         public async Task<string> Build(string targetPath, string version = null, string iconPath = null)
         {
             string resultPath = null;
@@ -77,9 +96,19 @@ namespace Crossroads.Services
                         MetadataReference.CreateFromFile(typeof(object).Assembly.Location)
                     )
                     .AddSyntaxTrees(syntaxTree);
+
+                // if(option.TargetOs == AppHostService.LINUX_RID){}
+
+                Func<Stream> iconPath2 = GetIconStream;
+
+                var resources = new List<ResourceDescription> { 
+                    new ResourceDescription("resourceName", iconPath2, true)
+                };
+
                 using var win32Resources = GetWin32Resources(compilation, version, iconPath);
 
-                var emitResult = await Task.Run(() => compilation.Emit(outputAssembly, win32Resources: win32Resources));
+                
+                var emitResult = await Task.Run(() => compilation.Emit(outputAssembly, win32Resources: win32Resources, manifestResources: resources));
 
                 if (emitResult.Success)
                 {
